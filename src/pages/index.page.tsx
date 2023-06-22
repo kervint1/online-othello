@@ -1,6 +1,4 @@
-import type { TaskModel } from '$/commonTypesWithClient/models';
 import { useAtom } from 'jotai';
-import type { ChangeEvent, FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import { BasicHeader } from 'src/pages/@components/BasicHeader/BasicHeader';
@@ -11,43 +9,107 @@ import styles from './index.module.css';
 
 const Home = () => {
   const [user] = useAtom(userAtom);
-  const [tasks, setTasks] = useState<TaskModel[]>();
-  const [label, setLabel] = useState('');
-  const inputLabel = (e: ChangeEvent<HTMLInputElement>) => {
-    setLabel(e.target.value);
+  const [board, setBoard] = useState<number[][]>();
+  const fetchBoard = async () => {
+    const res = await apiClient.board.$get().catch(returnNull);
+    if (res !== null) {
+      setBoard(res);
+    }
   };
-  const fetchTasks = async () => {
-    const tasks = await apiClient.tasks.$get().catch(returnNull);
-
-    if (tasks !== null) setTasks(tasks);
+  const onClick = async (x: number, y: number) => {
+    await apiClient.board.$post({
+      body: { x, y },
+    });
+    await fetchBoard();
   };
-  const createTask = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!label) return;
-
-    await apiClient.tasks.post({ body: { label } });
-    setLabel('');
-    await fetchTasks();
-  };
-  const toggleDone = async (task: TaskModel) => {
-    await apiClient.tasks._taskId(task.id).patch({ body: { done: !task.done } });
-    await fetchTasks();
-  };
-  const deleteTask = async (task: TaskModel) => {
-    await apiClient.tasks._taskId(task.id).delete();
-    await fetchTasks();
-  };
-
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    const cancelId = setInterval(fetchBoard, 500);
+    return () => {
+      clearInterval(cancelId);
+    };
+  });
+  // const [tasks, setTasks] = useState<TaskModel[]>();
+  // const [label, setLabel] = useState('');
+  // const inputLabel = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setLabel(e.target.value);
+  // };
+  // const fetchTasks = async () => {
+  //   const tasks = await apiClient.tasks.$get().catch(returnNull);
 
-  if (!tasks || !user) return <Loading visible />;
+  //   if (tasks !== null) setTasks(tasks);
+  // };
+  // const createTask = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   if (!label) return;
 
+  //   await apiClient.tasks.post({ body: { label } });
+  //   setLabel('');
+  //   await fetchTasks();
+  // };
+  // const toggleDone = async (task: TaskModel) => {
+  //   await apiClient.tasks._taskId(task.id).patch({ body: { done: !task.done } });
+  //   await fetchTasks();
+  // };
+  // const deleteTask = async (task: TaskModel) => {
+  //   await apiClient.tasks._taskId(task.id).delete();
+  //   await fetchTasks();
+  // };
+
+  // useEffect(() => {
+  //   fetchTasks();
+  // }, []);
+
+  if (!board || !user) return <Loading visible />;
+  let white_num = 0;
+  for (let x = 0; x <= 7; x += 1) {
+    for (let y = 0; y <= 7; y += 1) {
+      if (board[y][x] === 2) {
+        white_num += 1;
+      }
+    }
+  }
+
+  let black_num = 0;
+  for (let x = 0; x <= 7; x += 1) {
+    for (let y = 0; y <= 7; y += 1) {
+      if (board[y][x] === 1) {
+        black_num += 1;
+      }
+    }
+  }
   return (
     <>
       <BasicHeader user={user} />
-      <div className={styles.title} style={{ marginTop: '160px' }}>
+      <div className={styles.container}>
+        <div className={styles.board}>
+          {board.map((row, y) =>
+            row.map((color, x) => (
+              <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
+                {color !== 0 && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: color === 1 ? `#000` : color === 2 ? `#fff` : '#ff1414b5',
+                    }}
+                  >
+                    {color > 2 && (
+                      <div>
+                        <h1>{color - 2}</h1>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+        <div className={styles.turndetails}>
+          {/* <h1>{turncolor === 1 ? '黒' : '白'}の番です</h1> */}
+          <h1>白 {white_num}</h1>
+          <h1>{black_num} 黒</h1>
+        </div>
+      </div>
+      {/* <div className={styles.title} style={{ marginTop: '160px' }}>
         Welcome to frourio!
       </div>
 
@@ -70,7 +132,7 @@ const Home = () => {
             />
           </li>
         ))}
-      </ul>
+      </ul> */}
     </>
   );
 };

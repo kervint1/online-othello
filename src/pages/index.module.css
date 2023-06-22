@@ -20,3 +20,43 @@
 .deleteBtn {
   float: right;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  background-color: white;
+}
+
+.turndetails {
+  width: 200px;
+  height: 50px;
+  color: #0070f3;
+}
+
+.board {
+  box-shadow: 3px 3px 12px 12px #000;
+  display: flex;
+  flex-wrap: wrap;
+  width: 640px;
+  height: 640px;
+  background-color: green;
+}
+
+.cell {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #000;
+}
+
+.stone {
+  padding: 1px 1px 80px 30px;
+  height: 80px;
+  width: 80px;
+  background-color: white;
+  border-radius: 40px;
+}
