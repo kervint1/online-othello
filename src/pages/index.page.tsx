@@ -5,6 +5,7 @@ import { BasicHeader } from 'src/pages/@components/BasicHeader/BasicHeader';
 import { apiClient } from 'src/utils/apiClient';
 import { returnNull } from 'src/utils/returnNull';
 import { userAtom } from '../atoms/user';
+import { Cell } from './Cell';
 import styles from './index.module.css';
 
 const Home = () => {
@@ -61,22 +62,22 @@ const Home = () => {
 
   if (!board || !user) return <Loading visible />;
   let white_num = 0;
-  for (let x = 0; x <= 7; x += 1) {
-    for (let y = 0; y <= 7; y += 1) {
-      if (board[y][x] === 2) {
-        white_num += 1;
-      }
-    }
-  }
+  // for (let x = 0; x <= 7; x += 1) {
+  //   for (let y = 0; y <= 7; y += 1) {
+  //     if (board[y][x] === 2) {
+  //       white_num += 1;
+  //     }
+  //   }
+  // }
 
-  let black_num = 0;
-  for (let x = 0; x <= 7; x += 1) {
-    for (let y = 0; y <= 7; y += 1) {
-      if (board[y][x] === 1) {
-        black_num += 1;
-      }
-    }
-  }
+  // let black_num = 0;
+  // for (let x = 0; x <= 7; x += 1) {
+  //   for (let y = 0; y <= 7; y += 1) {
+  //     if (board[y][x] === 1) {
+  //       black_num += 1;
+  //     }
+  //   }
+  // }
   return (
     <>
       <BasicHeader user={user} />
@@ -84,29 +85,14 @@ const Home = () => {
         <div className={styles.board}>
           {board.map((row, y) =>
             row.map((color, x) => (
-              <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
-                {color !== 0 && (
-                  <div
-                    className={styles.stone}
-                    style={{
-                      background: color === 1 ? `#000` : color === 2 ? `#fff` : '#ff1414b5',
-                    }}
-                  >
-                    {color > 2 && (
-                      <div>
-                        <h1>{color - 2}</h1>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              <Cell key={`${x}-${y}`} color={color} onClick={() => onClick(x, y)} />
             ))
           )}
         </div>
         <div className={styles.turndetails}>
           {/* <h1>{turncolor === 1 ? '黒' : '白'}の番です</h1> */}
-          <h1>白 {white_num}</h1>
-          <h1>{black_num} 黒</h1>
+          {/* <h1>白 {white_num}</h1> */}
+          {/* <h1>{black_num} 黒</h1> */}
         </div>
       </div>
       {/* <div className={styles.title} style={{ marginTop: '160px' }}>

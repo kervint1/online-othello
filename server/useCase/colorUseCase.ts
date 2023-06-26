@@ -1,4 +1,4 @@
-import { UserId } from '$/commonTypesWithClient/branded';
+import type { UserId } from '$/commonTypesWithClient/branded';
 
 const colorDict: { black?: UserId; white?: UserId } = {};
 export const colorUseCase = {
