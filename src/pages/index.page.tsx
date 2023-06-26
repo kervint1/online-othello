@@ -61,7 +61,7 @@ const Home = () => {
   // }, []);
 
   if (!board || !user) return <Loading visible />;
-  let white_num = 0;
+  // let white_num = 0;
   // for (let x = 0; x <= 7; x += 1) {
   //   for (let y = 0; y <= 7; y += 1) {
   //     if (board[y][x] === 2) {
